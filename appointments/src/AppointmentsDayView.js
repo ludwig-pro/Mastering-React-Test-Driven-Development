@@ -1,27 +1,44 @@
 import React, { useState } from 'react';
 
-const appointmentTimeOfDay = startsAt => {
+const appointmentTimeOfDay = (startsAt) => {
   const [h, m] = new Date(startsAt).toTimeString().split(':');
   return `${h}:${m}`;
 };
 
-export const Appointment = ({ customer }) => (
-  <div>{customer.firstName}</div>
-);
+export const Appointment = ({ customer, startsAt }) => {
+  const { firstName, ...rest } = customer;
+  const details = Object.values(rest);
+  return (
+    <div>
+      <div>{customer.firstName}</div>
+      <table>
+        <thead>
+          <tr>
+            <th colspan="2">{appointmentTimeOfDay(startsAt)}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {details.map(([label, value]) => (
+            <tr>
+              <td>{label}</td>
+              <td>{value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
 export const AppointmentsDayView = ({ appointments }) => {
-  const [selectedAppointment, setSelectedAppointment] = useState(
-    0
-  );
+  const [selectedAppointment, setSelectedAppointment] = useState(0);
 
   return (
     <div id="appointmentsDayView">
       <ol>
         {appointments.map((appointment, i) => (
           <li key={appointment.startsAt}>
-            <button
-              type="button"
-              onClick={() => setSelectedAppointment(i)}>
+            <button type="button" onClick={() => setSelectedAppointment(i)}>
               {appointmentTimeOfDay(appointment.startsAt)}
             </button>
           </li>
