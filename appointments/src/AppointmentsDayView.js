@@ -5,12 +5,10 @@ const appointmentTimeOfDay = (startsAt) => {
   return `${h}:${m}`;
 };
 
-export const Appointment = ({ customer, startsAt }) => {
-  const { firstName, ...rest } = customer;
+export const Appointment = ({ startsAt, ...rest }) => {
   const details = Object.values(rest);
   return (
     <div>
-      <div>{customer.firstName}</div>
       <table>
         <thead>
           <tr>
@@ -18,7 +16,7 @@ export const Appointment = ({ customer, startsAt }) => {
           </tr>
         </thead>
         <tbody>
-          {details.map(([label, value]) => (
+          {details.map(({ label, value }) => (
             <tr>
               <td>{label}</td>
               <td>{value}</td>

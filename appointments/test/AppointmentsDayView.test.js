@@ -15,15 +15,220 @@ describe('Appointment', () => {
   const render = (component) => ReactDOM.render(component, container);
 
   it('renders the customer first name', () => {
-    customer = { firstName: 'Ashley' };
+    customer = { label: 'First name', value: 'Ashley' };
     render(<Appointment customer={customer} />);
     expect(container.textContent).toMatch('Ashley');
   });
 
   it('renders another customer first name', () => {
-    customer = { firstName: 'Jordan' };
+    customer = { label: 'First name', value: 'Jordan' };
     render(<Appointment customer={customer} />);
     expect(container.textContent).toMatch('Jordan');
+  });
+
+  function createFakeAppointments({ startsAt, firstName, ...rest }) {
+    return { startsAt: at(startsAt), customer: { firstName }, ...rest };
+  }
+
+  it('renders a table', () => {
+    render(<AppointmentsDayView appointments={sampleAppointments} />);
+    const table = container.querySelectorAll('table');
+    expect(table.length).toEqual(1);
+  });
+  it('renders the first appointment time by default as table head', () => {
+    render(<AppointmentsDayView appointments={[createFakeAppointments({ startsAt: 11, firstName: 'Charlie' })]} />);
+    expect(container.querySelectorAll('th').length).toEqual(1);
+    expect(container.querySelector('th').textContent).toEqual('11:00');
+  });
+  it('renders another first appointment time by default as table head', () => {
+    render(<AppointmentsDayView appointments={[createFakeAppointments({ startsAt: 10, firstName: 'Charlie' })]} />);
+    expect(container.querySelectorAll('th').length).toEqual(1);
+    expect(container.querySelector('th').textContent).toEqual('10:00');
+  });
+  it('renders another first appointment time by default as table head', () => {
+    render(<AppointmentsDayView appointments={sampleAppointments} />);
+    expect(container.querySelectorAll('th').length).toEqual(1);
+    expect(container.querySelector('th').textContent).toEqual('09:00');
+  });
+
+  it('renders the customer last name inside', () => {
+    render(
+      <AppointmentsDayView
+        appointments={[
+          createFakeAppointments({
+            startsAt: 10,
+            firstName: { label: 'First name', value: 'Charlie' },
+            lastName: { label: 'Last name', value: 'Brown' },
+          }),
+        ]}
+      />
+    );
+    expect(container.textContent).toMatch('Last name');
+    expect(container.textContent).toMatch('Brown');
+  });
+  it('renders another customer last name inside', () => {
+    render(
+      <AppointmentsDayView
+        appointments={[
+          createFakeAppointments({
+            startsAt: 10,
+            firstName: { label: 'First name', value: 'Orange' },
+            lastName: { label: 'Last name', value: 'Mechanical' },
+          }),
+        ]}
+      />
+    );
+    expect(container.textContent).toMatch('Last name');
+    expect(container.textContent).toMatch('Mechanical');
+  });
+
+  it('renders the customer phone number', () => {
+    render(
+      <AppointmentsDayView
+        appointments={[
+          createFakeAppointments({
+            startsAt: 10,
+            firstName: { label: 'First name', value: 'Orange' },
+            lastName: { label: 'Last name', value: 'Mechanical' },
+            phoneNumber: { label: 'Phone number', value: '0636656565' },
+          }),
+        ]}
+      />
+    );
+    expect(container.textContent).toMatch('Phone number');
+    expect(container.textContent).toMatch('0636656565');
+  });
+
+  it('renders another customer phone number', () => {
+    render(
+      <AppointmentsDayView
+        appointments={[
+          createFakeAppointments({
+            startsAt: 10,
+            firstName: { label: 'First name', value: 'Orange' },
+            lastName: { label: 'Last name', value: 'Mechanical' },
+            phoneNumber: { label: 'Phone number', value: '3434343434' },
+
+            phoneNumber: { label: 'Phone number', value: '3434343434' },
+          }),
+        ]}
+      />
+    );
+    expect(container.textContent).toMatch('Phone number');
+    expect(container.textContent).toMatch('3434343434');
+  });
+
+  it('renders the customer stylist', () => {
+    render(
+      <AppointmentsDayView
+        appointments={[
+          createFakeAppointments({
+            startsAt: 10,
+            firstName: { label: 'First name', value: 'Orange' },
+            lastName: { label: 'Last name', value: 'Mechanical' },
+            phoneNumber: { label: 'Phone number', value: '3434343434' },
+            stylist: { label: 'Stylist', value: 'Georgina' },
+          }),
+        ]}
+      />
+    );
+    expect(container.textContent).toMatch('Stylist');
+    expect(container.textContent).toMatch('Georgina');
+  });
+
+  it('renders another customer stylist', () => {
+    render(
+      <AppointmentsDayView
+        appointments={[
+          createFakeAppointments({
+            startsAt: 10,
+            firstName: { label: 'First name', value: 'Orange' },
+            lastName: { label: 'Last name', value: 'Mechanical' },
+            phoneNumber: { label: 'Phone number', value: '3434343434' },
+            stylist: { label: 'Stylist', value: 'P!nk' },
+          }),
+        ]}
+      />
+    );
+    expect(container.textContent).toMatch('Stylist');
+    expect(container.textContent).toMatch('P!nk');
+  });
+
+  it('renders the customer service', () => {
+    render(
+      <AppointmentsDayView
+        appointments={[
+          createFakeAppointments({
+            startsAt: 10,
+            firstName: { label: 'First name', value: 'Orange' },
+            lastName: { label: 'Last name', value: 'Mechanical' },
+            phoneNumber: { label: 'Phone number', value: '3434343434' },
+            stylist: { label: 'Stylist', value: 'P!nk' },
+            service: { label: 'Service', value: 'Beard trim' },
+          }),
+        ]}
+      />
+    );
+    expect(container.textContent).toMatch('Service');
+    expect(container.textContent).toMatch('Beard trim');
+  });
+
+  it('renders another customer service', () => {
+    render(
+      <AppointmentsDayView
+        appointments={[
+          createFakeAppointments({
+            startsAt: 10,
+            firstName: { label: 'First name', value: 'Orange' },
+            lastName: { label: 'Last name', value: 'Mechanical' },
+            phoneNumber: { label: 'Phone number', value: '3434343434' },
+            stylist: { label: 'Stylist', value: 'P!nk' },
+            service: { label: 'Service', value: 'Hair cut' },
+          }),
+        ]}
+      />
+    );
+    expect(container.textContent).toMatch('Service');
+    expect(container.textContent).toMatch('Hair cut');
+  });
+  it('renders the customer note', () => {
+    render(
+      <AppointmentsDayView
+        appointments={[
+          createFakeAppointments({
+            startsAt: 10,
+            firstName: { label: 'First name', value: 'Orange' },
+            lastName: { label: 'Last name', value: 'Mechanical' },
+            phoneNumber: { label: 'Phone number', value: '3434343434' },
+            stylist: { label: 'Stylist', value: 'P!nk' },
+            service: { label: 'Service', value: 'Hair cut' },
+            note: { label: 'Note', value: 'Private note' },
+          }),
+        ]}
+      />
+    );
+    expect(container.textContent).toMatch('Note');
+    expect(container.textContent).toMatch('Private note');
+  });
+
+  it('renders another customer note', () => {
+    render(
+      <AppointmentsDayView
+        appointments={[
+          createFakeAppointments({
+            startsAt: 10,
+            firstName: { label: 'First name', value: 'Orange' },
+            lastName: { label: 'Last name', value: 'Mechanical' },
+            phoneNumber: { label: 'Phone number', value: '3434343434' },
+            stylist: { label: 'Stylist', value: 'P!nk' },
+            service: ['Service', 'Hair cut'],
+            note: { label: 'Note', value: 'Another Private note' },
+          }),
+        ]}
+      />
+    );
+    expect(container.textContent).toMatch('Note');
+    expect(container.textContent).toMatch('Another Private note');
   });
 });
 
@@ -32,11 +237,11 @@ describe('AppointmentsDayView', () => {
   const appointments = [
     {
       startsAt: today.setHours(12, 0),
-      customer: { firstName: 'Ashley' },
+      firstName: { label: 'First name', value: 'Ashley' },
     },
     {
       startsAt: today.setHours(13, 0),
-      customer: { firstName: 'Jordan' },
+      firstName: { label: 'First name', value: 'Jordan' },
     },
   ];
   let container;
@@ -86,218 +291,5 @@ describe('AppointmentsDayView', () => {
     const button = container.querySelectorAll('button')[1];
     ReactTestUtils.Simulate.click(button);
     expect(container.textContent).toMatch('Jordan');
-  });
-});
-
-describe('AppointmentsDetailsView', () => {
-  let container;
-
-  beforeEach(() => {
-    container = document.createElement('div');
-  });
-
-  const render = (component) => ReactDOM.render(component, container);
-
-  function createFakeAppointments({ startsAt, firstName, ...rest }) {
-    return { startsAt: at(startsAt), customer: { firstName, ...rest } };
-  }
-
-  it('renders a table', () => {
-    render(<AppointmentsDayView appointments={sampleAppointments} />);
-    const table = container.querySelectorAll('table');
-    expect(table.length).toEqual(1);
-  });
-  it('renders the first appointment time by default as table head', () => {
-    render(
-      <AppointmentsDayView
-        appointments={[createFakeAppointments({ startsAt: 11, firstName: ['Last name', 'Charlie'] })]}
-      />
-    );
-    expect(container.querySelectorAll('th').length).toEqual(1);
-    expect(container.querySelector('th').textContent).toEqual('11:00');
-  });
-  it('renders another first appointment time by default as table head', () => {
-    render(
-      <AppointmentsDayView
-        appointments={[createFakeAppointments({ startsAt: 10, firstName: ['Last name', 'Charlie'] })]}
-      />
-    );
-    expect(container.querySelectorAll('th').length).toEqual(1);
-    expect(container.querySelector('th').textContent).toEqual('10:00');
-  });
-  it('renders another first appointment time by default as table head', () => {
-    render(<AppointmentsDayView appointments={sampleAppointments} />);
-    expect(container.querySelectorAll('th').length).toEqual(1);
-    expect(container.querySelector('th').textContent).toEqual('09:00');
-  });
-
-  it('renders the customer last name inside', () => {
-    render(
-      <AppointmentsDayView
-        appointments={[
-          createFakeAppointments({ startsAt: 10, firstName: 'Charlie', lastName: ['Last name', 'Brown'] }),
-        ]}
-      />
-    );
-    expect(container.querySelectorAll('td')[0].textContent).toEqual('Last name');
-    expect(container.querySelectorAll('td')[1].textContent).toEqual('Brown');
-  });
-  it('renders another customer last name inside', () => {
-    render(
-      <AppointmentsDayView
-        appointments={[
-          createFakeAppointments({ startsAt: 10, firstName: 'Orange', lastName: ['Last name', 'Mechanical'] }),
-        ]}
-      />
-    );
-    expect(container.querySelectorAll('td')[0].textContent).toEqual('Last name');
-    expect(container.querySelectorAll('td')[1].textContent).toEqual('Mechanical');
-  });
-
-  it('renders the customer phone number', () => {
-    render(
-      <AppointmentsDayView
-        appointments={[
-          createFakeAppointments({
-            startsAt: 10,
-            firstName: 'Orange',
-            lastName: ['Last name', 'Mechanical'],
-            phoneNumber: ['Phone number', '0636656565'],
-          }),
-        ]}
-      />
-    );
-    expect(container.querySelectorAll('td')[2].textContent).toEqual('Phone number');
-    expect(container.querySelectorAll('td')[3].textContent).toEqual('0636656565');
-  });
-
-  it('renders another customer phone number', () => {
-    render(
-      <AppointmentsDayView
-        appointments={[
-          createFakeAppointments({
-            startsAt: 10,
-            firstName: 'Orange',
-            lastName: ['Last name', 'Mechanical'],
-            phoneNumber: ['Phone number', '3434343434'],
-          }),
-        ]}
-      />
-    );
-    expect(container.querySelectorAll('td')[2].textContent).toEqual('Phone number');
-    expect(container.querySelectorAll('td')[3].textContent).toEqual('3434343434');
-  });
-
-  it('renders the customer stylist', () => {
-    render(
-      <AppointmentsDayView
-        appointments={[
-          createFakeAppointments({
-            startsAt: 10,
-            firstName: 'Orange',
-            lastName: ['Last name', 'Mechanical'],
-            phoneNumber: ['Phone number', '3434343434'],
-            stylist: ['Stylist', 'Georgina'],
-          }),
-        ]}
-      />
-    );
-    expect(container.querySelectorAll('td')[4].textContent).toEqual('Stylist');
-    expect(container.querySelectorAll('td')[5].textContent).toEqual('Georgina');
-  });
-
-  it('renders another customer stylist', () => {
-    render(
-      <AppointmentsDayView
-        appointments={[
-          createFakeAppointments({
-            startsAt: 10,
-            firstName: 'Orange',
-            lastName: ['Last name', 'Mechanical'],
-            phoneNumber: ['Phone number', '3434343434'],
-            stylist: ['Stylist', 'P!nk'],
-          }),
-        ]}
-      />
-    );
-    expect(container.querySelectorAll('td')[4].textContent).toEqual('Stylist');
-    expect(container.querySelectorAll('td')[5].textContent).toEqual('P!nk');
-  });
-
-  it('renders the customer service', () => {
-    render(
-      <AppointmentsDayView
-        appointments={[
-          createFakeAppointments({
-            startsAt: 10,
-            firstName: 'Orange',
-            lastName: ['Last name', 'Mechanical'],
-            phoneNumber: ['Phone number', '3434343434'],
-            stylist: ['Stylist', 'P!nk'],
-            service: ['Service', 'Beard trim'],
-          }),
-        ]}
-      />
-    );
-    expect(container.querySelectorAll('td')[6].textContent).toEqual('Service');
-    expect(container.querySelectorAll('td')[7].textContent).toEqual('Beard trim');
-  });
-
-  it('renders another customer service', () => {
-    render(
-      <AppointmentsDayView
-        appointments={[
-          createFakeAppointments({
-            startsAt: 10,
-            firstName: 'Orange',
-            lastName: ['Last name', 'Mechanical'],
-            phoneNumber: ['Phone number', '3434343434'],
-            stylist: ['Stylist', 'P!nk'],
-            service: ['Service', 'Hair cut'],
-          }),
-        ]}
-      />
-    );
-    expect(container.querySelectorAll('td')[6].textContent).toEqual('Service');
-    expect(container.querySelectorAll('td')[7].textContent).toEqual('Hair cut');
-  });
-  it('renders the customer note', () => {
-    render(
-      <AppointmentsDayView
-        appointments={[
-          createFakeAppointments({
-            startsAt: 10,
-            firstName: 'Orange',
-            lastName: ['Last name', 'Mechanical'],
-            phoneNumber: ['Phone number', '3434343434'],
-            stylist: ['Stylist', 'P!nk'],
-            service: ['Service', 'Beard trim'],
-            note: ['Note', 'Private note'],
-          }),
-        ]}
-      />
-    );
-    expect(container.querySelectorAll('td')[8].textContent).toEqual('Note');
-    expect(container.querySelectorAll('td')[9].textContent).toEqual('Private note');
-  });
-
-  it('renders another customer note', () => {
-    render(
-      <AppointmentsDayView
-        appointments={[
-          createFakeAppointments({
-            startsAt: 10,
-            firstName: 'Orange',
-            lastName: ['Last name', 'Mechanical'],
-            phoneNumber: ['Phone number', '3434343434'],
-            stylist: ['Stylist', 'P!nk'],
-            service: ['Service', 'Hair cut'],
-            note: ['Note', 'Another Private note'],
-          }),
-        ]}
-      />
-    );
-    expect(container.querySelectorAll('td')[8].textContent).toEqual('Note');
-    expect(container.querySelectorAll('td')[9].textContent).toEqual('Another Private note');
   });
 });
