@@ -30,7 +30,7 @@
   },
   "prettier": {
     "singleQuote": true,
-    "printWidth": 67,
+    "printWidth": 120,
     "jsxBracketSameLine": true
   }
 }
