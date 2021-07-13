@@ -26,4 +26,10 @@ describe('CustomerForm', () => {
     const field = getFormById('customer').elements.namedItem('firstName');
     expectToBeInputFieldOfTypeText(field);
   });
+
+  it('includes the existing value for the first name', () => {
+    render(<CustomerForm firstName="Ashley" />);
+    const field = getFormById('customer').elements.namedItem('firstName');
+    expect(field.value).toEqual('Ashley');
+  });
 });
