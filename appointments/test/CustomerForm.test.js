@@ -9,10 +9,21 @@ describe('CustomerForm', () => {
     ({ render, container } = createContainer());
   });
 
-  const form = id => container.querySelector(`form[id="${id}"]`);
+  const getFormById = (id) => container.querySelector(`form[id="${id}"]`);
 
+  const expectToBeInputFieldOfTypeText = (field) => {
+    expect(field).not.toBeNull();
+    expect(field.tagName).toBe('INPUT');
+    expect(field.type).toEqual('text');
+  };
   it('renders a form', () => {
     render(<CustomerForm />);
-    expect(form('customer')).not.toBeNull();
+    expect(getFormById('customer')).not.toBeNull();
+  });
+
+  it('renders the first name field as a text box', () => {
+    render(<CustomerForm />);
+    const field = getFormById('customer').elements.namedItem('firstName');
+    expectToBeInputFieldOfTypeText(field);
   });
 });
