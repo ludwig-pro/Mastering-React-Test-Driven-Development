@@ -10,9 +10,9 @@ describe('CustomerForm', () => {
     ({ render, container } = createContainer());
   });
 
-  const form = id => container.querySelector(`form[id="${id}"]`);
-  const field = name => form('customer').elements[name];
-  const labelFor = formElement =>
+  const form = (id) => container.querySelector(`form[id="${id}"]`);
+  const field = (name) => form('customer').elements[name];
+  const labelFor = (formElement) =>
     container.querySelector(`label[for="${formElement}"]`);
 
   it('renders a form', () => {
@@ -20,19 +20,19 @@ describe('CustomerForm', () => {
     expect(form('customer')).not.toBeNull();
   });
 
-  const expectToBeInputFieldOfTypeText = formElement => {
+  const expectToBeInputFieldOfTypeText = (formElement) => {
     expect(formElement).not.toBeNull();
     expect(formElement.tagName).toEqual('INPUT');
     expect(formElement.type).toEqual('text');
   };
 
-  const itRendersAsATextBox = fieldName =>
+  const itRendersAsATextBox = (fieldName) =>
     it('renders as a text box', () => {
       render(<CustomerForm />);
       expectToBeInputFieldOfTypeText(field(fieldName));
     });
 
-  const itIncludesTheExistingValue = fieldName =>
+  const itIncludesTheExistingValue = (fieldName) =>
     it('includes the existing value', () => {
       render(<CustomerForm {...{ [fieldName]: 'value' }} />);
       expect(field(fieldName).value).toEqual('value');
@@ -45,7 +45,7 @@ describe('CustomerForm', () => {
       expect(labelFor(fieldName).textContent).toEqual(text);
     });
 
-  const itAssignsAnIdThatMatchesTheLabelId = fieldName =>
+  const itAssignsAnIdThatMatchesTheLabelId = (fieldName) =>
     it('assigns an id that matches the label id', () => {
       render(<CustomerForm />);
       expect(field(fieldName).id).toEqual(fieldName);
@@ -57,7 +57,7 @@ describe('CustomerForm', () => {
       render(
         <CustomerForm
           {...{ [fieldName]: value }}
-          onSubmit={props =>
+          onSubmit={(props) =>
             expect(props[fieldName]).toEqual(value)
           }
         />
@@ -71,13 +71,13 @@ describe('CustomerForm', () => {
       render(
         <CustomerForm
           {...{ [fieldName]: 'existingValue' }}
-          onSubmit={props =>
+          onSubmit={(props) =>
             expect(props[fieldName]).toEqual(value)
           }
         />
       );
       await ReactTestUtils.Simulate.change(field(fieldName), {
-        target: { value }
+        target: { value, name: fieldName },
       });
       await ReactTestUtils.Simulate.submit(form('customer'));
     });
@@ -107,5 +107,14 @@ describe('CustomerForm', () => {
     itAssignsAnIdThatMatchesTheLabelId('phoneNumber');
     itSubmitsExistingValue('phoneNumber', '12345');
     itSubmitsNewValue('phoneNumber', '67890');
+  });
+
+  it('has a submit button', () => {
+    render(<CustomerForm />);
+    const submitButton = form('customer').querySelector(
+      'input[type="submit"]'
+    );
+
+    expect(submitButton).not.toBeNull();
   });
 });
